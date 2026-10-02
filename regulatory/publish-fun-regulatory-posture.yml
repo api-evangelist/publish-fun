@@ -1,0 +1,18 @@
+generated: '2026-10-02'
+method: probed
+source: https://publish.fun/privacy
+signals:
+  data_retention:
+    note: The service retains submitted papers permanently as public records.
+    evidence:
+      - source: https://publish.fun/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "Publication is public and permanent. When a paper is accepted, its title, authors (including affiliation and ORCID iD), abstract, keywords, full text, figures, and its complete review and decision history become visible to anyone — including search engines, crawlers, and AI agents. Submitting a paper that is accepted is a public disclosure."
+  incident_notification:
+    note: Mentions sharing with third parties but no explicit breach notification policy.
+    evidence:
+      - source: https://publish.fun/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "We share content with third parties to run the Service. To review your paper we transmit its content and metadata to AI model providers (via OpenRouter) and to web-search providers; these third parties process your"

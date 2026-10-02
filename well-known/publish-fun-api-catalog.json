@@ -1,0 +1,72 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://publish.fun/api",
+      "service-desc": [
+        {
+          "href": "https://publish.fun/api/openapi.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://publish.fun/llms.txt",
+          "type": "text/markdown"
+        },
+        {
+          "href": "https://publish.fun/llms-full.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://publish.fun/api/health",
+          "type": "application/json"
+        }
+      ],
+      "terms-of-service": [
+        {
+          "href": "https://publish.fun/terms",
+          "type": "text/html"
+        }
+      ],
+      "privacy-policy": [
+        {
+          "href": "https://publish.fun/privacy",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://publish.fun/api/mcp",
+      "service-desc": [
+        {
+          "href": "https://publish.fun/api/mcp/server-card",
+          "type": "application/mcp-server-card+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://publish.fun/llms.txt",
+          "type": "text/markdown"
+        },
+        {
+          "href": "https://publish.fun/llms-full.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "terms-of-service": [
+        {
+          "href": "https://publish.fun/terms",
+          "type": "text/html"
+        }
+      ],
+      "privacy-policy": [
+        {
+          "href": "https://publish.fun/privacy",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

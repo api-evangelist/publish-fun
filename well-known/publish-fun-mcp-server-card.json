@@ -1,0 +1,299 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "fun.publish/mcp",
+  "version": "1.0.0",
+  "title": "Publish.fun",
+  "description": "AI-reviewed research journal: submit, revise and track papers; cite published work.",
+  "websiteUrl": "https://publish.fun",
+  "icons": [
+    {
+      "src": "https://publish.fun/icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://publish.fun/api/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Optional. Needed for submit_paper, get_paper_status, submit_revision and upload_image: an API key from https://publish.fun/dashboard (submit_paper and upload_image also need a verified ORCID iD on the account). get_submission_guidelines and cite_paper work without it.",
+          "isRequired": false,
+          "isSecret": true,
+          "value": "Bearer {api_key}",
+          "variables": {
+            "api_key": {
+              "description": "Publish.fun API key",
+              "isRequired": true,
+              "isSecret": true
+            }
+          }
+        }
+      ],
+      "supportedProtocolVersions": [
+        "2025-06-18"
+      ]
+    }
+  ],
+  "serverInfo": {
+    "name": "publish.fun",
+    "title": "Publish.fun",
+    "version": "1.0.0"
+  },
+  "protocolVersion": "2025-06-18",
+  "url": "https://publish.fun/api/mcp",
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://publish.fun/api/mcp"
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
+  "authentication": {
+    "required": false,
+    "schemes": [
+      "bearer"
+    ]
+  },
+  "instructions": "Tools to submit research papers, upload figure images, check status, revise, and cite published papers. See /llms.txt (everything in one file: /llms-full.txt).",
+  "documentationUrl": "https://publish.fun/llms.txt",
+  "iconUrl": "https://publish.fun/icon.svg",
+  "tools": [
+    {
+      "name": "get_submission_guidelines",
+      "title": "Get submission guidelines",
+      "description": "Get the requirements and JSON schema for submitting a paper to Publish.fun, and how to obtain an API key + verify ORCID. With Authorization: Bearer <api_key> on the request it also returns the account's current submission_allowance (how many submissions are left this hour and today, and when the next slot opens).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "submit_paper",
+      "title": "Submit a paper for review",
+      "description": "Submit a research paper for AI peer review. Requires Authorization: Bearer <api_key> on the request and a verified ORCID iD on the account.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "title",
+          "authors",
+          "abstract",
+          "content"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "affiliation": {
+                  "type": "string"
+                },
+                "orcid": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "abstract": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 200,
+            "maxLength": 150000,
+            "description": "Paper body in GitHub-Flavored Markdown ($...$ math, GFM tables, ![cap](url) figures)."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "maxItems": 20
+          },
+          "license": {
+            "type": "string",
+            "enum": [
+              "CC-BY-4.0",
+              "CC0-1.0"
+            ],
+            "description": "Open license for the published article; CC-BY-4.0 (default) or CC0-1.0. Authors retain copyright."
+          },
+          "coauthorsConfirmed": {
+            "type": "boolean",
+            "description": "Required true when there is more than one author: confirms every listed co-author consented to this submission and to publication."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_paper_status",
+      "title": "Get a paper's review status",
+      "description": "Get the review status of a paper you submitted (decisions with their editorial_notes, reviews, current round, and versions: each round's manuscript with the title, abstract and keywords in force for it), plus your account's submission_allowance. Requires Authorization: Bearer <api_key>.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The internal id returned at submission (p_…) or, once published, the PF- permanent id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "submit_revision",
+      "title": "Submit a revised manuscript",
+      "description": "Submit a revised manuscript for a paper whose status is revision_requested — address the decision's summary_to_authors and key_concerns from get_paper_status, concern by concern in response_letter (see its description). The paper re-enters review as the next round: after a major-revision request the same panel checks each listed concern against the revised manuscript, reusing its earlier web evidence unless it cites a DOI or arXiv id that version did not, or more than 30% of its paragraphs are new or changed since the version that evidence was gathered on, and the editor accepts once every concern is addressed unless a new correctness, validity, novelty or reproducibility issue is documented with evidence; a round after a minor-revision request is checked by the editor alone (see get_submission_guidelines for the revision policy). Requires Authorization: Bearer <api_key>.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id",
+          "content",
+          "response_letter"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The paper's internal id (p_…) or PF- permanent id."
+          },
+          "content": {
+            "type": "string",
+            "minLength": 200,
+            "maxLength": 150000,
+            "description": "The FULL revised paper body in GitHub-Flavored Markdown (200–150,000 chars)."
+          },
+          "response_letter": {
+            "type": "string",
+            "description": "Response to the reviewers (20+ chars). Structure the response letter by concern: for each concern in the decision's key_concerns, quote it, then say what changed and where (the section of the revised manuscript), or explain why it was not changed. Reviewers verify each concern against the revised manuscript, not the letter alone."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 300,
+            "description": "Optional: replaces the paper's title. Omit to keep it."
+          },
+          "abstract": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 3000,
+            "description": "Optional: replaces the abstract. Revise it when the claims or method changed — reviewers read the abstract you leave in place. Omit to keep it."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "maxItems": 20,
+            "description": "Optional: replaces the keywords. Omit to keep them."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "upload_image",
+      "title": "Upload a figure image",
+      "description": "Upload a figure image (PNG, JPEG, GIF or WebP) for a manuscript and get a permanent public URL to reference as ![caption](url) in submit_paper / submit_revision content. An uploaded image is public as soon as it is uploaded: anyone with the link can open it, before any review and whether or not the paper is ever accepted, so upload only images that may be made public. Copies of images referenced at other hosts or embedded inline are public in the same way once the paper enters review. The image is re-encoded (metadata stripped; GIF/WebP stored as PNG; at most 10 MB and 25 megapixels; 60 uploads/hour). NOTE: this JSON-RPC endpoint accepts bodies up to 4 MB, so base64 images are capped at roughly 3 MB here — for larger files POST multipart/form-data to /api/uploads/images (GET it for the schema). Images become permanent once a submitted manuscript references them; unreferenced uploads are removed after 7 days. Requires Authorization: Bearer <api_key> and a verified ORCID iD.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "The image bytes as base64 — bare, or a data: URL (data:image/png;base64,...). The format is detected from the bytes."
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Optional; only used to suggest a caption in the returned markdown."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "cite_paper",
+      "title": "Cite a published paper",
+      "description": "Get a citation for a published paper (no auth). Returns BibTeX/RIS/CSL/text.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "permanent_id"
+        ],
+        "properties": {
+          "permanent_id": {
+            "type": "string",
+            "description": "e.g. PF-260626.000001"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "bibtex",
+              "ris",
+              "csl",
+              "text",
+              "all"
+            ]
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

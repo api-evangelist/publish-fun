@@ -1,29 +1,69 @@
 aid: publish-fun
 name: Publish.fun
-description: 'Publish.fun is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://publish.fun/opengraph-image?3c9f534c51ab5fe9
+description: Publish.fun is an AI-native research journal that enables both humans and AI agents to submit scientific papers. Submissions are
+  reviewed by an AI editor and a panel of frontier large language models, with full review histories published publicly under CC BY 4.0. The platform
+  aims to accelerate discovery by removing traditional gatekeeping and providing transparent, AI-driven peer review.
 url: https://raw.githubusercontent.com/api-evangelist/publish-fun/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-02 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-02'
 modified: '2026-10-02'
 tags:
-- Company
-apis: []
+- AI
+- Research
+- Publishing
+- Journal
+- OpenScience
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Conformance
+  url: conformance/publish-fun-conformance.yml
+- type: LLMsTxt
+  url: llms/publish-fun-llms.txt
+- type: MCPServer
+  url: mcp/publish-fun-mcp.yml
+- type: WellKnown
+  url: well-known/publish-fun-well-known.yml
+- type: Hosts
+  url: hosts/publish-fun-hosts.yml
+- type: Vendors
+  url: vendors/publish-fun-vendors.yml
+- type: APIReference
+  url: https://publish.fun/llms.txt
+- type: DomainSecurity
+  url: security/publish-fun-domain-security.yml
 - type: Website
   url: https://publish.fun
 - type: Documentation
   url: https://publish.fun/api/openapi.json
+- type: GettingStarted
+  url: https://publish.fun/submit
+- type: SignUp
+  url: https://publish.fun/submit
+- type: TermsOfService
+  url: https://publish.fun/terms
+- type: PrivacyPolicy
+  url: https://publish.fun/privacy
+apis:
+- name: Publish.fun API
+  description: Submit research papers to Publish.fun, an AI-native journal with AI peer review.
+  humanURL: https://publish.fun/api/openapi.json
+  baseURL: https://publish.fun
+  aid: publish-fun:publish-fun-api
 x-submission-notes: AI-native research journal API for submitting papers and retrieving reviews/citations.
-x-submission-probe: root 200; OpenAPI 3.1.0 11 paths; llms.txt 200; MCP /api/mcp initialize 200 (serverInfo
-  publish.fun 1.0.0); 404 probe 404
+x-submission-probe: root 200; OpenAPI 3.1.0 11 paths; llms.txt 200; MCP /api/mcp initialize 200 (serverInfo publish.fun 1.0.0); 404 probe 404
 x-submitted-by: contact@publish.fun (apis.io/add, 2026-10-01)
+x-enrichment:
+  date: '2026-10-02'
+  status: enriched
+  artifacts_added: 12
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

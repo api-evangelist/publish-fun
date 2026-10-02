@@ -1,0 +1,10 @@
+generated: '2026-10-02'
+method: probed
+source: https://publish.fun/api/mcp/server-card
+deployment:
+  mode: remote
+  endpoint: https://publish.fun/api/mcp
+  install: null
+  package: null
+  auth: api-key
+  verified: probed
