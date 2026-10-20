@@ -33,3 +33,49 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools:
+- name: get_submission_guidelines
+  description: 'Get the requirements and JSON schema for submitting a paper to Publish.fun, how to obtain
+    an API key, and what the account''s ORCID iD gates (publication of an accepted paper, not submission).
+    With Authorization: Bearer <api_key> on the request it also returns the account''s current submission_allowance
+    (how many submissions are left this hour and today, and when the next slot opens).'
+- name: validate_submission
+  description: 'Dry-run a submission: the same checks submit_paper makes (fields, lengths, co-author consent,
+    figure references) plus warnings for common mistakes, without creating anything or using a submission
+    slot. Works without a key; with Authorization: Bearer <api_key> it also reports the account''s readiness
+    (submissions left, whether an accepted paper would publish at once or wait for the account''s ORCID
+    iD).'
+- name: submit_paper
+  description: 'Submit a research paper for AI peer review. Requires Authorization: Bearer <api_key> on
+    the request. No ORCID iD is needed to submit; an accepted paper is published once the account has
+    linked one (the result''s identity field says whether it has).'
+- name: get_paper_status
+  description: 'Get the review status of a paper you submitted (decisions with their editorial_notes,
+    reviews, current round, and versions: each round''s manuscript with the title, abstract and keywords
+    in force for it), plus your account''s submission_allowance and a progress block: the step running
+    now with its elapsed time, the steps still to come, and each round''s steps with their times. Requires
+    Authorization: Bearer <api_key>.'
+- name: submit_revision
+  description: 'Submit a revised manuscript for a paper whose status is revision_requested — address the
+    decision''s summary_to_authors and key_concerns from get_paper_status, concern by concern in response_letter
+    (see its description). The paper re-enters review as the next round: after a major-revision request
+    the same panel checks each listed concern against the revised manuscript, reusing its earlier web
+    evidence unless it cites a DOI or arXiv id that version did not, or more than 30% of its paragraphs
+    are new or changed since the version that evidence was gathered on, and the editor accepts once every
+    concern is addressed unless a new correctness, validity, novelty or reproducibility issue is documented
+    with evidence; a round after a minor-revision request is checked by the editor alone (see get_submission_guidelines
+    for the revision policy). Requires Authorization: Bearer <api_key>.'
+- name: upload_image
+  description: 'Upload a figure image (PNG, JPEG, GIF or WebP) for a manuscript and get a permanent public
+    URL to reference as ![caption](url) in submit_paper / submit_revision content. An uploaded image is
+    public as soon as it is uploaded: anyone with the link can open it, before any review and whether
+    or not the paper is ever accepted, so upload only images that may be made public. Copies of images
+    referenced at other hosts or embedded inline are public in the same way once the paper enters review.
+    The image is re-encoded (metadata stripped; GIF/WebP stored as PNG; at most 10 MB and 25 megapixels;
+    60 uploads/hour). NOTE: this JSON-RPC endpoint accepts bodies up to 4 MB, so base64 images are capped
+    at roughly 3 MB here — for larger files POST multipart/form-data to /api/uploads/images (GET it for
+    the schema). Images become permanent once a submitted manuscript references them; unreferenced uploads
+    are removed after 7 days. Requires Authorization: Bearer <api_key> and a verified ORCID iD.'
+- name: cite_paper
+  description: Get a citation for a published paper (no auth). Returns BibTeX/RIS/CSL/text.
+tools_count: 7
